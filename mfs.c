@@ -4,8 +4,6 @@
 #include "udp.h"
 #include "mfs.h"
 
-#define BUFFER_SIZE (5000)
-
 struct sockaddr_in addrSnd, addrRcv;
 int sd;
 int rc;
@@ -74,9 +72,13 @@ int MFS_Lookup(int pinum, char *name)
                 break;  
             default: {
                 rc = UDP_Read(sd, &addrRcv, message, BUFFER_SIZE);
+                if(rc < 0)
+                    return -1;
                 memcpy(&msg, (mssg*) message, sizeof(mssg));
                 printf("client(<--Lookup):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer);
-                return msg.inum;
+                if(msg.tag != -1)
+                    return msg.inum;
+                return msg.tag;
             }
         }
         printf("client:: waiting 5 sec\n");
@@ -126,13 +128,17 @@ int MFS_Stat(int inum, MFS_Stat_t *m)
                 break;  
             default: {
                 rc = UDP_Read(sd, &addrRcv, message, BUFFER_SIZE);
+                if(rc < 0)
+                    return -1;
                 memcpy(&msg, (mssg*) message, sizeof(mssg));
                 printf("client(<--Stat):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer);
-                m->type = msg.type; 
-
-                //TODO: add field to mssg to send size
-                m->size = msg.size; 
-                return 0;
+                
+                if(msg.tag != -1) {
+                    //Add fields to MFS_STAT struture
+                    m->type = msg.type; 
+                    m->size = msg.size; 
+                }
+                return msg.tag;
             }
         }
         printf("client:: waiting 5 sec\n");
@@ -190,11 +196,11 @@ int MFS_Write(int inum, char *buffer, int block)
             default: {
                 //read success message for write
                 rc = UDP_Read(sd, &addrRcv, message, BUFFER_SIZE);
-                memcpy(&msg, (mssg*) message, sizeof(mssg));
-                printf("client(<--Write):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer);
                 if(rc < 0)
                     return -1;
-                return 0;
+                memcpy(&msg, (mssg*) message, sizeof(mssg));
+                printf("client(<--Write):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer);
+                return msg.tag;
             }
         }
         printf("client:: waiting 5 sec\n");
@@ -206,6 +212,10 @@ int MFS_Write(int inum, char *buffer, int block)
 //tag=4
 int MFS_Read(int inum, char *buffer, int block)
 {
+    if(block < 0 || block > 14 || strlen(buffer) > MFS_BLOCK_SIZE) {
+        return -1;
+    }
+
     mssg msg = {0, 0, 0, 0, 0, 0, "\0", "\0"};
     msg.tag = 4;
     msg.inum = inum;
@@ -246,10 +256,12 @@ int MFS_Read(int inum, char *buffer, int block)
                 break;  
             default: {
                 rc = UDP_Read(sd, &addrRcv, message, BUFFER_SIZE);
+                if(rc < 0)
+                    return -1;
                 memcpy(&msg, (mssg*) message, sizeof(mssg));
                 printf("client(<--Read):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer);
-                strcpy(buffer,msg.buffer);
-                return 0;
+                memcpy(&buffer, msg.buffer, MFS_BUFFER_SIZE);
+                return msg.tag;
             }
         }
         printf("client:: waiting 5 sec\n");
@@ -302,9 +314,11 @@ int MFS_Creat(int pinum, int type, char *name)
                 break;  
             default: { 
                 rc = UDP_Read(sd, &addrRcv, message, BUFFER_SIZE);
+                if(rc < 0)
+                    return -1;
                 memcpy(&msg, (mssg*) message, sizeof(mssg));
                 printf("client(<--Creat):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer); 
-                return 0;
+                return msg.tag;
             }
         }
         printf("client:: waiting 5 sec\n");
@@ -354,9 +368,11 @@ int MFS_Unlink(int pinum, char *name)
                 break;  
             default: { 
                 rc = UDP_Read(sd, &addrRcv, message, BUFFER_SIZE);
+                if(rc < 0)
+                    return -1;
                 memcpy(&msg, (mssg*) message, sizeof(mssg));
                 printf("client(<--Creat):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer); 
-                return 0;
+                return msg.tag;
             }
         }
         printf("client:: waiting 5 sec\n");
@@ -365,9 +381,57 @@ int MFS_Unlink(int pinum, char *name)
     return -1; 
 }
 
-// no tag
+//tag = 7
 int MFS_Shutdown()
 {
+    mssg msg = {0, 0, 0, 0, 0, 0, "\0", "\0"};
+    msg.tag = 7;
+
+    char message[BUFFER_SIZE];
+    memcpy((mssg*)message, &msg, sizeof(mssg)); 
+    printf("client(Shutdown-->):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer);
+    rc = UDP_Write(sd, &addrSnd, message, BUFFER_SIZE); 
+    if(rc < 0) {
+    printf("client:: failed to send %d\n", rc);
+    exit(1);
+    } 
+
+    while(1) {
+        //reset select() interface values everytime it returns
+        fd_set rfds;
+        struct timeval tv;
+        int rd_ready;
+
+        FD_ZERO(&rfds);
+        FD_SET(sd, &rfds); //set select to monitor sd for reading
+        tv.tv_sec = 5;
+        tv.tv_usec = 0;
+
+        rd_ready = select(sd+1, &rfds, NULL, NULL, &tv); //declare sd to monitor sd only for reading.
+
+        switch (rd_ready) {
+            case -1:
+                perror("select().\n sending a new request\n");
+                rc = UDP_Write(sd, &addrSnd, message, BUFFER_SIZE); 
+                break;
+            case 0:
+                printf("select() returns 0.\n sending a new request\n");
+                rc = UDP_Write(sd, &addrSnd, message, BUFFER_SIZE); 
+                break;  
+            default: { 
+                rc = UDP_Read(sd, &addrRcv, message, BUFFER_SIZE);
+                if(rc < 0)
+                    return -1;
+                memcpy(&msg, (mssg*) message, sizeof(mssg));
+                printf("client(<--Shutdown):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer); 
+                if(msg.tag == -1)
+                    return -1;
+                return UDP_CLOSE(sd);
+            }
+        }
+        printf("client:: waiting 5 sec\n");
+    } 
+    printf("client:: Shutdown done \n"); 
     return UDP_Close(sd);
 }
 
