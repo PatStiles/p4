@@ -18,7 +18,7 @@ typedef struct mssg {
 // client code
 int main(int argc, char *argv[]) {
     int r; 
-    r = MFS_Init("localhost", 8889);
+    r = MFS_Init("localhost", 11113);
     printf("%d\n",r);
 
     r = MFS_Lookup(1, "a");
@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     r = MFS_Stat(1,&m);
     printf("%d\n",r);
 
-    char message[BUFFER_SIZE];
+    char message[MFS_BLOCK_SIZE];
     sprintf(message, "hello world fuck me its late");
     r = MFS_Write(1, message, 1);
     printf("%d\n",r);
@@ -36,11 +36,11 @@ int main(int argc, char *argv[]) {
     r = MFS_Read(1, message, 1);
     printf("%d\n",r);
 
-    r = MFS_Creat(1,1,"a");
-    printf("%d\n",r);
+    //r = MFS_Creat(1,1,"a");
+    //printf("%d\n",r);
 
-    r = MFS_Unlink(1,"a");
-    printf("%d\n",r);
+    //r = MFS_Unlink(1,"a");
+    //printf("%d\n",r);
 
     r = MFS_Shutdown();
     printf("%d\n",r);
