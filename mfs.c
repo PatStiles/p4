@@ -153,7 +153,7 @@ int MFS_Stat(int inum, MFS_Stat_t *m)
 int MFS_Write(int inum, char *buffer, int block)
 {
     if(block < 0 || block > 14 || strlen(buffer) > MFS_BLOCK_SIZE) {
-        exit(1);
+        return -1;
     }
 
     mssg msg = {0, 0, 0, 0, 0, 0, "\0", "\0"};
@@ -275,6 +275,11 @@ int MFS_Read(int inum, char *buffer, int block)
 //tag=5
 int MFS_Creat(int pinum, int type, char *name)
 { 
+    if(sizeof(name) > 24 || pinum > 4096 || pinum < 0) { 
+        printf("%ld\n",sizeof(name));
+        return -1;
+    }
+
     mssg msg = {0, 0, 0, 0, 0, 0, "\0", "\0"};
     msg.tag = 5;
     msg.pinum = pinum;

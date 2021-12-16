@@ -22,8 +22,8 @@ Test shutdown
 init server and client then call shutdown
 
 **********************************************************************
-Starting server on port 7455
-/tmp/tmp26b17P/p/server 7455 testimage
+Starting server on port 6562
+/tmp/tmp4q0nq_/p/server 6562 testimage
 server:: waiting...
 server:: read message [size:4096 contents:( tag:7 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
 Initializing Client Connection ...
@@ -44,8 +44,8 @@ Test creat
 creat a file and check with lookup
 
 **********************************************************************
-Starting server on port 6772
-/tmp/tmp26b17P/p/server 6772 testimage
+Starting server on port 5804
+/tmp/tmp4q0nq_/p/server 5804 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -64,8 +64,8 @@ Test write
 write then read one block
 
 **********************************************************************
-Starting server on port 8400
-/tmp/tmp26b17P/p/server 8400 testimage
+Starting server on port 6380
+/tmp/tmp4q0nq_/p/server 6380 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -84,8 +84,8 @@ Test stat
 stat a regular file
 
 **********************************************************************
-Starting server on port 6578
-/tmp/tmp26b17P/p/server 6578 testimage
+Starting server on port 7823
+/tmp/tmp4q0nq_/p/server 7823 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -104,8 +104,8 @@ Test overwrite
 overwrite a block
 
 **********************************************************************
-Starting server on port 5470
-/tmp/tmp26b17P/p/server 5470 testimage
+Starting server on port 9246
+/tmp/tmp4q0nq_/p/server 9246 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -124,8 +124,8 @@ Test maxfile
 write largest possible file
 
 **********************************************************************
-Starting server on port 8723
-/tmp/tmp26b17P/p/server 8723 testimage
+Starting server on port 5591
+/tmp/tmp4q0nq_/p/server 5591 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -144,8 +144,8 @@ Test maxfile2
 write more blocks than possible
 
 **********************************************************************
-Starting server on port 7139
-/tmp/tmp26b17P/p/server 7139 testimage
+Starting server on port 9056
+/tmp/tmp4q0nq_/p/server 9056 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -164,8 +164,8 @@ Test sparse
 write first and last block
 
 **********************************************************************
-Starting server on port 9564
-/tmp/tmp26b17P/p/server 9564 testimage
+Starting server on port 7830
+/tmp/tmp4q0nq_/p/server 7830 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -184,8 +184,8 @@ Test stat2
 stat a sparse file
 
 **********************************************************************
-Starting server on port 6645
-/tmp/tmp26b17P/p/server 6645 testimage
+Starting server on port 5317
+/tmp/tmp4q0nq_/p/server 5317 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -204,8 +204,8 @@ Test dir1
 check root for dot entries
 
 **********************************************************************
-Starting server on port 9013
-/tmp/tmp26b17P/p/server 9013 testimage
+Starting server on port 8468
+/tmp/tmp4q0nq_/p/server 8468 testimage
 Initializing Client Connection ...
 Connection Success ...client(Lookup-->):: message [size:0 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:. buffer:)]
 client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -224,8 +224,8 @@ Test dir2
 create a new directory and check it
 
 **********************************************************************
-Starting server on port 6719
-/tmp/tmp26b17P/p/server 6719 testimage
+Starting server on port 6839
+/tmp/tmp4q0nq_/p/server 6839 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -244,8 +244,8 @@ Test baddir
 try to create a file with a file parent inode
 
 **********************************************************************
-Starting server on port 5708
-/tmp/tmp26b17P/p/server 5708 testimage
+Starting server on port 6002
+/tmp/tmp4q0nq_/p/server 6002 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -264,8 +264,8 @@ Test baddir2
 try to lookup a file with a file parent inode
 
 **********************************************************************
-Starting server on port 6915
-/tmp/tmp26b17P/p/server 6915 testimage
+Starting server on port 6135
+/tmp/tmp4q0nq_/p/server 6135 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -284,8 +284,8 @@ Test unlink
 unlink a file
 
 **********************************************************************
-Starting server on port 6105
-/tmp/tmp26b17P/p/server 6105 testimage
+Starting server on port 7775
+/tmp/tmp4q0nq_/p/server 7775 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -304,8 +304,8 @@ Test unlink2
 unlink a directory
 
 **********************************************************************
-Starting server on port 8301
-/tmp/tmp26b17P/p/server 8301 testimage
+Starting server on port 9556
+/tmp/tmp4q0nq_/p/server 9556 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:0 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -324,8 +324,8 @@ Test empty
 unlink a non-empty directory
 
 **********************************************************************
-Starting server on port 7953
-/tmp/tmp26b17P/p/server 7953 testimage
+Starting server on port 8852
+/tmp/tmp4q0nq_/p/server 8852 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -344,11 +344,29 @@ Test name
 name too long
 
 **********************************************************************
-Starting server on port 6836
-/tmp/tmp26b17P/p/server 6836 testimage
+Starting server on port 7457
+/tmp/tmp4q0nq_/p/server 7457 testimage
 server:: waiting...
 server:: read message [size:4096 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA buffer:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)]
 server:: Processing Creat()
+imapIndex 0 inodeIndex 0 
+inmapIndex 0 imap number 0
+	inode: inum 0 addr: 0
+	inode: inum 1 addr: 0
+	inode: inum 2 addr: 0
+	inode: inum 3 addr: 0
+	inode: inum 4 addr: 0
+	inode: inum 5 addr: 0
+	inode: inum 6 addr: 0
+	inode: inum 7 addr: 0
+	inode: inum 8 addr: 0
+	inode: inum 9 addr: 0
+	inode: inum 10 addr: 0
+	inode: inum 11 addr: 0
+	inode: inum 12 addr: 0
+	inode: inum 13 addr: 0
+	inode: inum 14 addr: 0
+	inode: inum 15 addr: 0
 server:: send message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
 server:: reply
 server:: waiting...
@@ -373,8 +391,8 @@ Test persist
 restart server after creating a file
 
 **********************************************************************
-Starting server on port 9616
-/tmp/tmp26b17P/p/server 9616 testimage
+Starting server on port 6486
+/tmp/tmp4q0nq_/p/server 6486 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -400,12 +418,12 @@ Trying to build project using make
 make
 gcc -Wall -Werror -g -c -fPIC mfs.c
 gcc -Wall -Werror -g -shared -Wl,-soname,libmfs.so -o libmfs.so mfs.o udp.c -lc
-/usr/bin/ld: /tmp/ccxtNTVL.o: relocation R_X86_64_PC32 against symbol `stderr@@GLIBC_2.2.5' can not be used when making a shared object; recompile with -fPIC
+/usr/bin/ld: /tmp/ccugvHAu.o: relocation R_X86_64_PC32 against symbol `stderr@@GLIBC_2.2.5' can not be used when making a shared object; recompile with -fPIC
 /usr/bin/ld: final link failed: bad value
 collect2: error: ld returned 1 exit status
 make: *** [Makefile:19: libmfs.so] Error 1
-Starting server on port 5176
-/tmp/tmp26b17P/p/server 5176 testimage
+Starting server on port 9790
+/tmp/tmp4q0nq_/p/server 9790 testimage
 OSError: [Errno 2] No such file or directory
 Trying to clean project using make clean
 make clean
@@ -432,8 +450,8 @@ Test bigdir
 create a directory with max number of files
 
 **********************************************************************
-Starting server on port 5952
-/tmp/tmp26b17P/p/server 5952 testimage
+Starting server on port 9705
+/tmp/tmp4q0nq_/p/server 9705 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -452,8 +470,8 @@ Test bigdir2
 create a directory with more files than possible
 
 **********************************************************************
-Starting server on port 6770
-/tmp/tmp26b17P/p/server 6770 testimage
+Starting server on port 8154
+/tmp/tmp4q0nq_/p/server 8154 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -472,8 +490,8 @@ Test deep
 create many deeply nested directories
 
 **********************************************************************
-Starting server on port 6044
-/tmp/tmp26b17P/p/server 6044 testimage
+Starting server on port 6480
+/tmp/tmp4q0nq_/p/server 6480 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -492,8 +510,8 @@ Test complex
 a long sequence of creats and writes followed by a check
 
 **********************************************************************
-Starting server on port 7855
-/tmp/tmp26b17P/p/server 7855 testimage
+Starting server on port 9844
+/tmp/tmp4q0nq_/p/server 9844 testimage
 Initializing Client Connection ...
 Connection Success ...Filesyste to be written:
 
@@ -552,8 +570,8 @@ Test complex2
 a long sequence of creats and writes followed by a check
 
 **********************************************************************
-Starting server on port 6643
-/tmp/tmp26b17P/p/server 6643 testimage
+Starting server on port 9360
+/tmp/tmp4q0nq_/p/server 9360 testimage
 Initializing Client Connection ...
 Connection Success ...Filesyste to be written:
 
@@ -696,8 +714,8 @@ Test persist2
 restart server after creating many dirs and files
 
 **********************************************************************
-Starting server on port 7067
-/tmp/tmp26b17P/p/server 7067 testimage
+Starting server on port 6118
+/tmp/tmp4q0nq_/p/server 6118 testimage
 Initializing Client Connection ...
 Connection Success ...Filesyste to be written:
 
@@ -840,8 +858,8 @@ Test free
 check that inodes and direcrtory entries are freed
 
 **********************************************************************
-Starting server on port 7724
-/tmp/tmp26b17P/p/server 7724 testimage
+Starting server on port 8063
+/tmp/tmp4q0nq_/p/server 8063 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:0 buffer:)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
