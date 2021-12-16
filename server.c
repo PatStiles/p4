@@ -53,30 +53,39 @@ mssg lookUp(mssg m) {
 
     //Iterate over all imaps
     int count = 0;
-    while(checkPoint.im[count] != 0 && count < IMAP_NUMBER) {
+    while(checkPoint.im[count] != 0) {
 		printf("loop\n");
         imap im; 
         pread(fd, buffer, sizeof(imap),checkPoint.im[count]*MFS_BLOCK_SIZE);
         memcpy(&im, (imap*)buffer, sizeof(imap));
+		printf("imap: %d imap[0]: %d imap[1] %d\n", checkPoint.im[count], im.inodes[0], im.inodes[1]);
 
         //Iterate over all inodes in a imap for inum of interest
         for(int i = 0; i < INODE_NUMBER; i++) {
+			printf("\tinode %d\n", im.inodes[i]);
 
             //Check if inode matches pinum
-            if(im.inodes[i] == m.pinum) { inode n; pread(fd, buffer,
-                    sizeof(inode), im.inodes[i]*MFS_BLOCK_SIZE); memcpy(&n,
-                    (inode*)buffer, sizeof(inode));
+            if(im.inodes[i] == m.pinum) { 
+				printf("\t\tinode found %d %d\n", im.inodes[i], m.pinum);
+				inode n; 
+				pread(fd, buffer, sizeof(inode), im.inodes[i]*MFS_BLOCK_SIZE); 
+				memcpy(&n, (inode*)buffer, sizeof(inode));
                 
                 //Check if file is directory if not return -1
-                if(n.type != MFS_DIRECTORY) { msg.tag = -1; return msg; }
+                //if(n.type != MFS_DIRECTORY) { 
+				//	printf("not a directory\n");
+				//	msg.tag = -1; return msg; 
+				//}
                 //create directory object to iterate over
-                dir d; pread(fd, buffer, sizeof(dir), n.dp[0]*MFS_BLOCK_SIZE);
+                dir d; 
+				pread(fd, buffer, sizeof(dir), n.dp[0]*MFS_BLOCK_SIZE);
                 memcpy(&d, (dir*)buffer, sizeof(dir));
 
                 //May have to iterate over all blocks in inode if directory
                 //takes up more than one block
-                for(int j = 0; j < DIR_NUMBER; j++) {
+                for(int j = 2; j < DIR_NUMBER; j++) {
 
+					printf("file name: %s\n",d.entries[j].name);
                     //See if name of file entry matches name if so return m.inum
                     if(strcmp(d.entries[j].name,m.name) == 0) {
                         msg.inum = d.entries[j].inum;
@@ -89,6 +98,7 @@ mssg lookUp(mssg m) {
     }
 
     //Not found return -1
+	printf("not found\n");
     msg.tag = -1;
     return msg;
 }
@@ -273,14 +283,17 @@ mssg Creat(mssg m) {
         //Iterate over all inodes in a imap for inum of interest
     int count = 0;
     while(checkPoint.im[count] != 0) {
+		printf("imap number %d\n", checkPoint.im[count]);
         imap o; 
-        pread(fd, buffer, sizeof(imap*),checkPoint.im[count]);
+        pread(fd, buffer, sizeof(imap),checkPoint.im[count]*MFS_BLOCK_SIZE);
         memcpy(&o, (imap*)buffer, sizeof(imap));
 
         for(int i = 0; i < INODE_NUMBER; i++) {
+			printf("inum %d\n", o.inodes[i]);
             if(o.inodes[i] == m.pinum) {
+				printf("inode match %d %d %d\n",i, o.inodes[i], m.pinum);
                 inode n; 
-                pread(fd, buffer, sizeof(inode), im.inodes[i]*MFS_BLOCK_SIZE); 
+                pread(fd, buffer, sizeof(inode), o.inodes[i]*MFS_BLOCK_SIZE); 
                 memcpy(&n,(inode*)buffer, sizeof(inode));
                  
                 //create directory object to iterate over
@@ -290,46 +303,56 @@ mssg Creat(mssg m) {
 
                 //Check if name already exist
                 for(int j = 2; j < DIR_NUMBER; j++) {
-                    if(strcmp(d.entries[j]->name,m.name) == 0) 
+					printf("directory entry %d -%s-\n",d.entries[j].inum, d.entries[j].name);
+                    if(strcmp(d.entries[j].name,m.name) == 0) 
                         return msg;
-                    if(d.entries[j]->inum == -1) {
-                        int newInum = d.entries[j-1]->inum + 1;
+                    if(d.entries[j].inum == -1) {
+                        int newInum = d.entries[j-1].inum + 1;
+						printf("pInum %d nInum %d\n",d.entries[j-1].inum, newInum);
                         if(m.type == MFS_DIRECTORY) {
                             strcpy(d.entries[j].name,m.name);
-                            d.entries[j]->inum == newInum;
-                          
+                            d.entries[j].inum = newInum;
+	
+                         	printf("new dir\n"); 
                             //Write pDirectory
                             memcpy((dir*)buffer, &d, sizeof(dir));
                             pwrite(fd, buffer, sizeof(dir), n.dp[0]*MFS_BLOCK_SIZE);
+							printf("pDir address %d \n", n.dp[0]*MFS_BLOCK_SIZE);
 
                             //Create new directory
-                            dir newDir = createDir(newInum);
+                            dir newDir = creatDir(newInum);
 
                             //Create new inode
-                            inode i;
-                            i.type = MFS_DIRECTORY;
-                            i.size = MFS_BLOCK_SIZE - 1;
-                            i.dp[0] = (checkPoint.end/MFS_BLOCK_SIZE) - 1;
+                            inode in;
+                            in.type = MFS_DIRECTORY;
+                            in.size = MFS_BLOCK_SIZE - 1;
+                            in.dp[0] = (checkPoint.end/MFS_BLOCK_SIZE) - 1;
+							printf("New Inode: type %d size %d dp[0] %d\n", in.type, in.size, in.dp[0]);
 
                             //Write new Directory block
                             memcpy((dir*)buffer, &newDir, sizeof(dir));
                             pwrite(fd, buffer, sizeof(dir), checkPoint.end);
+							printf("newDir address %d \n", checkPoint.end);
 
                             //Write new inode
-                            memcpy((inode*)buffer, &i, sizeof(inode));
+                            memcpy((inode*)buffer, &in, sizeof(inode));
                             pwrite(fd, buffer, sizeof(inode), checkPoint.end+MFS_BLOCK_SIZE);
+							printf("newInode address %d \n", checkPoint.end+MFS_BLOCK_SIZE);
 
                             //Write pInode
                             memcpy((inode*)buffer, &n, sizeof(inode));
                             pwrite(fd, buffer, sizeof(inode),checkPoint.end+(2*MFS_BLOCK_SIZE));
+							printf("pInode address %d \n",checkPoint.end+(2*MFS_BLOCK_SIZE));
 
                             //Update imap
-                            o.inodes[i] = ((checkPoint.end+(2*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE) - 1;
                             o.inodes[newInum] = ((checkPoint.end+MFS_BLOCK_SIZE)/MFS_BLOCK_SIZE) - 1;
+                            o.inodes[i] = ((checkPoint.end+(2*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE) - 1;
+							printf("o.inodes[newInum] %d %d 0.inodes[i] %d %d\n", o.inodes[newInum], ((checkPoint.end+MFS_BLOCK_SIZE)/MFS_BLOCK_SIZE) - 1, o.inodes[i], ((checkPoint.end+(2*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE) - 1);
 
                             //Write imap
-                            memcpy((imap*)buffer, &im, sizeof(imap));
-                            pwrite(fd,buffer,sizeof(imap*), checkPoint.end+(3*MFS_BLOCK_SIZE));
+                            memcpy((imap*)buffer, &o, sizeof(imap));
+                            pwrite(fd,buffer,sizeof(imap), checkPoint.end+(3*MFS_BLOCK_SIZE));
+							printf("imap address %d\n",checkPoint.end+(3*MFS_BLOCK_SIZE));
 
                             //get stat to find size of file
                             struct stat sb;
@@ -340,7 +363,9 @@ mssg Creat(mssg m) {
 
                             //Update checkPoint
                             checkPoint.im[count] = ((checkPoint.end+(3*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE)-1;
+							printf("checkPoint.im[count] %d\n", ((checkPoint.end+(3*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE)-1);
                             checkPoint.end = sb.st_size;
+							printf("checkPoint.end %d\n", checkPoint.end);
     
                             //Write checkpoint
                             memcpy((cp*)buffer, &checkPoint, sizeof(cp));
@@ -348,34 +373,40 @@ mssg Creat(mssg m) {
 
                             return msg;  
                         } else {
+							printf("new file, name %s, inum %d\n", m.name, newInum);
                             strcpy(d.entries[j].name,m.name);
-                            d.entries[j]->inum == newInum;
+                            d.entries[j].inum = newInum;
                             
                             //Write pDirectory
                             memcpy((dir*)buffer, &d, sizeof(dir));
                             pwrite(fd, buffer, sizeof(dir), n.dp[0]*MFS_BLOCK_SIZE);
+							printf("pDir address %d \n", n.dp[0]*MFS_BLOCK_SIZE);
 
                             //Create new inode
-                            inode i;
-                            i.type = MFS_REGULAR_FILE;
-                            i.size = MFS_BLOCK_SIZE - 1;
-                            i.dp[0] = (checkPoint.end/MFS_BLOCK_SIZE) - 1;
+                            inode in;
+                            in.type = MFS_REGULAR_FILE;
+                            in.size = MFS_BLOCK_SIZE - 1;
+                            in.dp[0] = (checkPoint.end/MFS_BLOCK_SIZE) - 1;
+							printf("New Inode: type %d size %d dp[0] %d\n", in.type, in.size, in.dp[0]);
 
                             //Write new inode
-                            memcpy((inode*)buffer, &i, sizeof(inode));
+                            memcpy((inode*)buffer, &in, sizeof(inode));
                             pwrite(fd, buffer, sizeof(inode), checkPoint.end+MFS_BLOCK_SIZE);
+							printf("newInode address %d \n", checkPoint.end+MFS_BLOCK_SIZE);
 
                             //Write pInode
                             memcpy((inode*)buffer, &n, sizeof(inode));
                             pwrite(fd, buffer, sizeof(inode),checkPoint.end+(2*MFS_BLOCK_SIZE));
+							printf("pInode address %d \n",checkPoint.end+(2*MFS_BLOCK_SIZE));
 
                             //Update imap
-                            o.inodes[i] = ((checkPoint.end+(2*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE) - 1;
                             o.inodes[newInum] = ((checkPoint.end+MFS_BLOCK_SIZE)/MFS_BLOCK_SIZE) - 1;
-
+                            o.inodes[i] = ((checkPoint.end+(2*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE) - 1;
+							printf("o.inodes[newInum] %d %d 0.inodes[i] %d %d\n", o.inodes[newInum], ((checkPoint.end+MFS_BLOCK_SIZE)/MFS_BLOCK_SIZE) - 1, o.inodes[i], ((checkPoint.end+(2*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE) - 1);
                             //Write imap
-                            memcpy((imap*)buffer, &im, sizeof(imap));
-                            pwrite(fd,buffer,sizeof(imap*), checkPoint.end+(3*MFS_BLOCK_SIZE));
+                            memcpy((imap*)buffer, &o, sizeof(imap));
+                            pwrite(fd,buffer,sizeof(imap), checkPoint.end+(3*MFS_BLOCK_SIZE));
+							printf("imap address %d\n",checkPoint.end+(3*MFS_BLOCK_SIZE));
 
                             //get stat to find size of file
                             struct stat sb;
@@ -386,18 +417,22 @@ mssg Creat(mssg m) {
 
                             //Update checkPoint
                             checkPoint.im[count] = ((checkPoint.end+(3*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE)-1;
+							printf("checkPoint.im[count] %d\n", ((checkPoint.end+(3*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE)-1);
                             checkPoint.end = sb.st_size;
+							printf("checkPoint.end %d\n", checkPoint.end);
     
                             //Write checkpoint
                             memcpy((cp*)buffer, &checkPoint, sizeof(cp));
                             pwrite(fd,buffer,sizeof(cp),0);
 
+
+        					pread(fd, buffer, sizeof(imap),checkPoint.im[count]*MFS_BLOCK_SIZE);
+        					memcpy(&o, (imap*)buffer, sizeof(imap));
+							printf("o.inodes[0] %d 0.inodes[1] %d\n", o.inodes[0], o.inodes[1]);
                             return msg;  
                         }
                     }   
-                }
-
-                
+				} 
                 
             }
         }
@@ -424,8 +459,8 @@ mssg Unlink(mssg m) {
         //Iterate over all inodes in a imap for inum of interest
         for(int i = 0; i < INODE_NUMBER; i++) {
 
-            //Check if inode matches pinum
-            if(im.inodes[i] == m.pinum) { 
+			//Check if inode matches pinum
+			if(im.inodes[i] == m.pinum) { 
                 inode n; 
                 pread(fd, buffer, sizeof(inode), im.inodes[i]*MFS_BLOCK_SIZE); 
                 memcpy(&n,(inode*)buffer, sizeof(inode));
@@ -441,8 +476,8 @@ mssg Unlink(mssg m) {
                 for(int j = 2; j < DIR_NUMBER; j++) {
 
                     //See if name of file entry matches name if so return m.inum
-                    if(strcmp(d.entries[j]->name,m.name) == 0) {
-                        unlinkedInum = d.entries[j]->inum;
+                    if(strcmp(d.entries[j].name,m.name) == 0) {
+                        unlinkedInum = d.entries[j].inum;
 
                         //Get unlinkedInode to access
                         inode unlinkedInode;
@@ -456,18 +491,18 @@ mssg Unlink(mssg m) {
                             memcpy(&unlinkedDir, (dir*)buffer, sizeof(dir));
 
                             //check if inode is directory and if so the directory is not empty; return -1
-                            if(unlinkedDir.entries[2]->inum != -1) {
+                            if(unlinkedDir.entries[2].inum != -1) {
                                 msg.tag = -1;
                                 return msg;
                             }
                         }
 
                         //set name to null by setting all values to "\0" using memset
-                        d.entries[j]->inum = -1;
-                        memset(d.entries[j]->name, "\0", 24*sizeof(char));
+                        d.entries[j].inum = -1;
+                        memset(d.entries[j].name, '\0', 24*sizeof(char));
 
                         //clear imap entry of unlinked inode
-                        im.inodes[unlinkedInum] == 0;
+                        im.inodes[unlinkedInum] = 0;
 
                         //Write Directory
                         memcpy((dir*)buffer, &d, sizeof(d));
@@ -482,7 +517,7 @@ mssg Unlink(mssg m) {
  
                         //Write imap
                         memcpy((imap*)buffer, &im, sizeof(imap));
-                        pwrite(fd,buffer,sizeof(imap),checkpoint.end+MFS_BLOCK_SIZE);
+                        pwrite(fd,buffer,sizeof(imap),checkPoint.end+MFS_BLOCK_SIZE);
 
                         //get stat to find size of file
                         struct stat st;
@@ -520,6 +555,7 @@ void Shutdown() {
 
     char reply[MFS_BLOCK_SIZE];
     mssg msg = {0, 0, 0, 0, 0, 0, "\0", "\0"};
+
 	memcpy((mssg*)reply, &msg, sizeof(mssg));
     int rc = UDP_Write(sd, &addr, reply, MFS_BLOCK_SIZE);
 	if (rc == -1) {
@@ -550,25 +586,31 @@ void createImage() {
     i.type = MFS_DIRECTORY;
     i.size = MFS_BLOCK_SIZE - 1;
     i.dp[0] = 1;
+	printf("initial Inode %d %d %d\n", i.type, i.size, i.dp[0]);
 
     //Initialize initial Inode map
     imap im;
     im.inodes[0] = 2;
+	printf("init inode %d\n",im.inodes[0]);
 
     //Write Directory
     memcpy((dir*)buffer, &dr, sizeof(dir));
     pwrite(fd,buffer,sizeof(dir),i.dp[0]*MFS_BLOCK_SIZE);
+	printf("initDir Address %d\n", i.dp[0]*MFS_BLOCK_SIZE);
 
     //Write inode
     memcpy((inode*)buffer, &i, sizeof(inode));
     pwrite(fd,buffer,sizeof(inode),im.inodes[0]*MFS_BLOCK_SIZE);
+	printf("initInode Address %d\n", im.inodes[0]*MFS_BLOCK_SIZE);
  
     //Assign checkpoint imap number 
     checkPoint.im[0] = 3;
+	printf("initImap number %d\n",checkPoint.im[0]);
 
     //Write imap
     memcpy((imap*)buffer, &im, sizeof(imap));
     pwrite(fd,buffer,sizeof(imap),checkPoint.im[0]*MFS_BLOCK_SIZE);
+	printf("initImap address %d\n",checkPoint.im[0]*MFS_BLOCK_SIZE);
 
     //get stat to find size of file
     struct stat sb;
@@ -578,8 +620,8 @@ void createImage() {
     }
 
     //Initialize initial CheckPoint should be 4*4Kb
-    printf("%ld\n",sb.st_size);
     checkPoint.end = sb.st_size;
+    printf("init checkPoint.end %d\n",checkPoint.end);
     
     //write checkpoint
     memcpy((cp*)buffer, &checkPoint, sizeof(cp));

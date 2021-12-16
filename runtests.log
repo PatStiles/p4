@@ -22,11 +22,10 @@ Test shutdown
 init server and client then call shutdown
 
 **********************************************************************
-Starting server on port 7476
-/tmp/tmpQITCR_/p/server 7476 testimage
+Starting server on port 7455
+/tmp/tmp26b17P/p/server 7455 testimage
 server:: waiting...
 server:: read message [size:4096 contents:( tag:7 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-rc 4096
 Initializing Client Connection ...
 Connection Success ...client(Shutdown-->):: message [size:0 contents:( tag:7 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
 client reading
@@ -45,19 +44,17 @@ Test creat
 creat a file and check with lookup
 
 **********************************************************************
-Starting server on port 5856
-/tmp/tmpQITCR_/p/server 5856 testimage
+Starting server on port 6772
+/tmp/tmp26b17P/p/server 6772 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='test'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=1 name='test'
 
 
 test creat FAILED
  (creat a file and check with lookup)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 starting write
 
@@ -67,19 +64,17 @@ Test write
 write then read one block
 
 **********************************************************************
-Starting server on port 6528
-/tmp/tmpQITCR_/p/server 6528 testimage
+Starting server on port 8400
+/tmp/tmp26b17P/p/server 8400 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='test'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=1 name='test'
 
 
 test write FAILED
  (write then read one block)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 starting stat
 
@@ -89,19 +84,17 @@ Test stat
 stat a regular file
 
 **********************************************************************
-Starting server on port 8043
-/tmp/tmpQITCR_/p/server 8043 testimage
+Starting server on port 6578
+/tmp/tmp26b17P/p/server 6578 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='test'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=1 name='test'
 
 
 test stat FAILED
  (stat a regular file)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 starting overwrite
 
@@ -111,19 +104,17 @@ Test overwrite
 overwrite a block
 
 **********************************************************************
-Starting server on port 8655
-/tmp/tmpQITCR_/p/server 8655 testimage
+Starting server on port 5470
+/tmp/tmp26b17P/p/server 5470 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='test'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=1 name='test'
 
 
 test overwrite FAILED
  (overwrite a block)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 starting maxfile
 
@@ -133,19 +124,17 @@ Test maxfile
 write largest possible file
 
 **********************************************************************
-Starting server on port 8152
-/tmp/tmpQITCR_/p/server 8152 testimage
+Starting server on port 8723
+/tmp/tmp26b17P/p/server 8723 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='test'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=1 name='test'
 
 
 test maxfile FAILED
  (write largest possible file)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 starting maxfile2
 
@@ -155,19 +144,17 @@ Test maxfile2
 write more blocks than possible
 
 **********************************************************************
-Starting server on port 7218
-/tmp/tmpQITCR_/p/server 7218 testimage
+Starting server on port 7139
+/tmp/tmp26b17P/p/server 7139 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='test'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=1 name='test'
 
 
 test maxfile2 FAILED
  (write more blocks than possible)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 starting sparse
 
@@ -177,19 +164,17 @@ Test sparse
 write first and last block
 
 **********************************************************************
-Starting server on port 6715
-/tmp/tmpQITCR_/p/server 6715 testimage
+Starting server on port 9564
+/tmp/tmp26b17P/p/server 9564 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='test'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=1 name='test'
 
 
 test sparse FAILED
  (write first and last block)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 starting stat2
 
@@ -199,19 +184,17 @@ Test stat2
 stat a sparse file
 
 **********************************************************************
-Starting server on port 9933
-/tmp/tmpQITCR_/p/server 9933 testimage
+Starting server on port 6645
+/tmp/tmp26b17P/p/server 6645 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='test'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=1 name='test'
 
 
 test stat2 FAILED
  (stat a sparse file)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 starting dir1
 
@@ -221,8 +204,8 @@ Test dir1
 check root for dot entries
 
 **********************************************************************
-Starting server on port 5431
-/tmp/tmpQITCR_/p/server 5431 testimage
+Starting server on port 9013
+/tmp/tmp26b17P/p/server 9013 testimage
 Initializing Client Connection ...
 Connection Success ...client(Lookup-->):: message [size:0 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:. buffer:)]
 client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
@@ -241,19 +224,17 @@ Test dir2
 create a new directory and check it
 
 **********************************************************************
-Starting server on port 9956
-/tmp/tmpQITCR_/p/server 9956 testimage
+Starting server on port 6719
+/tmp/tmp26b17P/p/server 6719 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='testdir'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=0 name='testdir'
 
 
 test dir2 FAILED
  (create a new directory and check it)
- MFS_Lookup returned failure inum=0 name='testdir'
+ MFS_Creat returned failure inum=0 type=0 name='testdir'
 
 starting baddir
 
@@ -263,19 +244,17 @@ Test baddir
 try to create a file with a file parent inode
 
 **********************************************************************
-Starting server on port 9305
-/tmp/tmpQITCR_/p/server 9305 testimage
+Starting server on port 5708
+/tmp/tmp26b17P/p/server 5708 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='testdir'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=1 name='testdir'
 
 
 test baddir FAILED
  (try to create a file with a file parent inode)
- MFS_Lookup returned failure inum=0 name='testdir'
+ MFS_Creat returned failure inum=0 type=1 name='testdir'
 
 starting baddir2
 
@@ -285,19 +264,17 @@ Test baddir2
 try to lookup a file with a file parent inode
 
 **********************************************************************
-Starting server on port 7736
-/tmp/tmpQITCR_/p/server 7736 testimage
+Starting server on port 6915
+/tmp/tmp26b17P/p/server 6915 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='testdir'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=1 name='testdir'
 
 
 test baddir2 FAILED
  (try to lookup a file with a file parent inode)
- MFS_Lookup returned failure inum=0 name='testdir'
+ MFS_Creat returned failure inum=0 type=1 name='testdir'
 
 starting unlink
 
@@ -307,19 +284,17 @@ Test unlink
 unlink a file
 
 **********************************************************************
-Starting server on port 8813
-/tmp/tmpQITCR_/p/server 8813 testimage
+Starting server on port 6105
+/tmp/tmp26b17P/p/server 6105 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='test'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=1 name='test'
 
 
 test unlink FAILED
  (unlink a file)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 starting unlink2
 
@@ -329,19 +304,17 @@ Test unlink2
 unlink a directory
 
 **********************************************************************
-Starting server on port 6155
-/tmp/tmpQITCR_/p/server 6155 testimage
+Starting server on port 8301
+/tmp/tmp26b17P/p/server 8301 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:0 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='test'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=0 name='test'
 
 
 test unlink2 FAILED
  (unlink a directory)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=0 name='test'
 
 starting empty
 
@@ -351,19 +324,17 @@ Test empty
 unlink a non-empty directory
 
 **********************************************************************
-Starting server on port 6596
-/tmp/tmpQITCR_/p/server 6596 testimage
+Starting server on port 7953
+/tmp/tmp26b17P/p/server 7953 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='testdir'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=0 name='testdir'
 
 
 test empty FAILED
  (unlink a non-empty directory)
- MFS_Lookup returned failure inum=0 name='testdir'
+ MFS_Creat returned failure inum=0 type=0 name='testdir'
 
 starting name
 
@@ -373,17 +344,26 @@ Test name
 name too long
 
 **********************************************************************
-Starting server on port 5415
-/tmp/tmpQITCR_/p/server 5415 testimage
+Starting server on port 6836
+/tmp/tmp26b17P/p/server 6836 testimage
+server:: waiting...
+server:: read message [size:4096 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA buffer:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)]
+server:: Processing Creat()
+server:: send message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+server:: reply
+server:: waiting...
+server:: read message [size:4096 contents:( tag:7 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA buffer:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: Name argument too long did not result in failure
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+client(Shutdown-->):: message [size:4096 contents:( tag:7 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+client reading
+client reading complete
+client(<--Shutdown):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
 
 
-test name FAILED
+test name PASSED
  (name too long)
- Name argument too long did not result in failure
 
 starting persist
 
@@ -393,19 +373,17 @@ Test persist
 restart server after creating a file
 
 **********************************************************************
-Starting server on port 5864
-/tmp/tmpQITCR_/p/server 5864 testimage
+Starting server on port 9616
+/tmp/tmp26b17P/p/server 9616 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:test buffer:st)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='test'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=1 name='test'
 
 
 test persist FAILED
  (restart server after creating a file)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 starting drop
 
@@ -422,12 +400,12 @@ Trying to build project using make
 make
 gcc -Wall -Werror -g -c -fPIC mfs.c
 gcc -Wall -Werror -g -shared -Wl,-soname,libmfs.so -o libmfs.so mfs.o udp.c -lc
-/usr/bin/ld: /tmp/ccpGqiBv.o: relocation R_X86_64_PC32 against symbol `stderr@@GLIBC_2.2.5' can not be used when making a shared object; recompile with -fPIC
+/usr/bin/ld: /tmp/ccxtNTVL.o: relocation R_X86_64_PC32 against symbol `stderr@@GLIBC_2.2.5' can not be used when making a shared object; recompile with -fPIC
 /usr/bin/ld: final link failed: bad value
 collect2: error: ld returned 1 exit status
 make: *** [Makefile:19: libmfs.so] Error 1
-Starting server on port 5359
-/tmp/tmpQITCR_/p/server 5359 testimage
+Starting server on port 5176
+/tmp/tmp26b17P/p/server 5176 testimage
 OSError: [Errno 2] No such file or directory
 Trying to clean project using make clean
 make clean
@@ -454,19 +432,17 @@ Test bigdir
 create a directory with max number of files
 
 **********************************************************************
-Starting server on port 7868
-/tmp/tmpQITCR_/p/server 7868 testimage
+Starting server on port 5952
+/tmp/tmp26b17P/p/server 5952 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='testdir'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=0 name='testdir'
 
 
 test bigdir FAILED
  (create a directory with max number of files)
- MFS_Lookup returned failure inum=0 name='testdir'
+ MFS_Creat returned failure inum=0 type=0 name='testdir'
 
 starting bigdir2
 
@@ -476,19 +452,17 @@ Test bigdir2
 create a directory with more files than possible
 
 **********************************************************************
-Starting server on port 8063
-/tmp/tmpQITCR_/p/server 8063 testimage
+Starting server on port 6770
+/tmp/tmp26b17P/p/server 6770 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='testdir'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=0 name='testdir'
 
 
 test bigdir2 FAILED
  (create a directory with more files than possible)
- MFS_Lookup returned failure inum=0 name='testdir'
+ MFS_Creat returned failure inum=0 type=0 name='testdir'
 
 starting deep
 
@@ -498,19 +472,17 @@ Test deep
 create many deeply nested directories
 
 **********************************************************************
-Starting server on port 8654
-/tmp/tmpQITCR_/p/server 8654 testimage
+Starting server on port 6044
+/tmp/tmp26b17P/p/server 6044 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:testdir buffer:stdir)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='testdir'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=0 name='testdir'
 
 
 test deep FAILED
  (create many deeply nested directories)
- MFS_Lookup returned failure inum=0 name='testdir'
+ MFS_Creat returned failure inum=0 type=0 name='testdir'
 
 starting complex
 
@@ -520,8 +492,8 @@ Test complex
 a long sequence of creats and writes followed by a check
 
 **********************************************************************
-Starting server on port 6832
-/tmp/tmpQITCR_/p/server 6832 testimage
+Starting server on port 7855
+/tmp/tmp26b17P/p/server 7855 testimage
 Initializing Client Connection ...
 Connection Success ...Filesyste to be written:
 
@@ -564,15 +536,13 @@ Connection Success ...Filesyste to be written:
 /2/0/file1 [2]
 
 client(Creat-->):: message [size:0 contents:( tag:5 type:0 size:0 pinum:0 inum:0 block:0 name:1 buffer:)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:1 buffer:)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='1'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=0 name='1'
 
 
 test complex FAILED
  (a long sequence of creats and writes followed by a check)
- MFS_Lookup returned failure inum=0 name='1'
+ MFS_Creat returned failure inum=0 type=0 name='1'
 
 starting complex2
 
@@ -582,8 +552,8 @@ Test complex2
 a long sequence of creats and writes followed by a check
 
 **********************************************************************
-Starting server on port 8090
-/tmp/tmpQITCR_/p/server 8090 testimage
+Starting server on port 6643
+/tmp/tmp26b17P/p/server 6643 testimage
 Initializing Client Connection ...
 Connection Success ...Filesyste to be written:
 
@@ -710,15 +680,13 @@ Connection Success ...Filesyste to be written:
 /2/0/0/file1 [2]
 
 client(Creat-->):: message [size:0 contents:( tag:5 type:0 size:0 pinum:0 inum:0 block:0 name:1 buffer:)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:1 buffer:)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='1'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=0 name='1'
 
 
 test complex2 FAILED
  (a long sequence of creats and writes followed by a check)
- MFS_Lookup returned failure inum=0 name='1'
+ MFS_Creat returned failure inum=0 type=0 name='1'
 
 starting persist2
 
@@ -728,8 +696,8 @@ Test persist2
 restart server after creating many dirs and files
 
 **********************************************************************
-Starting server on port 8572
-/tmp/tmpQITCR_/p/server 8572 testimage
+Starting server on port 7067
+/tmp/tmp26b17P/p/server 7067 testimage
 Initializing Client Connection ...
 Connection Success ...Filesyste to be written:
 
@@ -856,15 +824,13 @@ Connection Success ...Filesyste to be written:
 /2/0/0/file1 [2]
 
 client(Creat-->):: message [size:0 contents:( tag:5 type:0 size:0 pinum:0 inum:0 block:0 name:1 buffer:)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Lookup-->):: message [size:4096 contents:( tag:1 type:0 size:0 pinum:0 inum:0 block:0 name:1 buffer:)]
-client(<--Lookup):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Lookup returned failure inum=0 name='1'
+client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
+Failure: MFS_Creat returned failure inum=0 type=0 name='1'
 
 
 test persist2 FAILED
  (restart server after creating many dirs and files)
- MFS_Lookup returned failure inum=0 name='1'
+ MFS_Creat returned failure inum=0 type=0 name='1'
 
 starting free
 
@@ -874,19 +840,17 @@ Test free
 check that inodes and direcrtory entries are freed
 
 **********************************************************************
-Starting server on port 9495
-/tmp/tmpQITCR_/p/server 9495 testimage
+Starting server on port 7724
+/tmp/tmp26b17P/p/server 7724 testimage
 Initializing Client Connection ...
 Connection Success ...client(Creat-->):: message [size:0 contents:( tag:5 type:1 size:0 pinum:0 inum:0 block:0 name:0 buffer:)]
-client(<--Creat):: message [size:4096 contents:( tag:0 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-client(Unlink-->):: message [size:4096 contents:( tag:6 type:0 size:0 pinum:0 inum:0 block:0 name:0 buffer:)]
 client(<--Creat):: message [size:4096 contents:( tag:-1 type:0 size:0 pinum:0 inum:0 block:0 name: buffer:)]
-Failure: MFS_Unlink returned failure pinum=0 name='0'
+Failure: MFS_Creat returned failure inum=0 type=1 name='0'
 
 
 test free FAILED
  (check that inodes and direcrtory entries are freed)
- MFS_Unlink returned failure pinum=0 name='0'
+ MFS_Creat returned failure inum=0 type=1 name='0'
 
 **********************************************************************
 Summary:
@@ -898,35 +862,35 @@ test shutdown PASSED
 
 test creat FAILED
  (creat a file and check with lookup)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 test write FAILED
  (write then read one block)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 test stat FAILED
  (stat a regular file)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 test overwrite FAILED
  (overwrite a block)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 test maxfile FAILED
  (write largest possible file)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 test maxfile2 FAILED
  (write more blocks than possible)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 test sparse FAILED
  (write first and last block)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 test stat2 FAILED
  (stat a sparse file)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 test dir1 FAILED
  (check root for dot entries)
@@ -934,35 +898,34 @@ test dir1 FAILED
 
 test dir2 FAILED
  (create a new directory and check it)
- MFS_Lookup returned failure inum=0 name='testdir'
+ MFS_Creat returned failure inum=0 type=0 name='testdir'
 
 test baddir FAILED
  (try to create a file with a file parent inode)
- MFS_Lookup returned failure inum=0 name='testdir'
+ MFS_Creat returned failure inum=0 type=1 name='testdir'
 
 test baddir2 FAILED
  (try to lookup a file with a file parent inode)
- MFS_Lookup returned failure inum=0 name='testdir'
+ MFS_Creat returned failure inum=0 type=1 name='testdir'
 
 test unlink FAILED
  (unlink a file)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 test unlink2 FAILED
  (unlink a directory)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=0 name='test'
 
 test empty FAILED
  (unlink a non-empty directory)
- MFS_Lookup returned failure inum=0 name='testdir'
+ MFS_Creat returned failure inum=0 type=0 name='testdir'
 
-test name FAILED
+test name PASSED
  (name too long)
- Name argument too long did not result in failure
 
 test persist FAILED
  (restart server after creating a file)
- MFS_Lookup returned failure inum=0 name='test'
+ MFS_Creat returned failure inum=0 type=1 name='test'
 
 test drop FAILED
  (drop every other packet sent by client)
@@ -972,31 +935,31 @@ test drop FAILED
 
 test bigdir FAILED
  (create a directory with max number of files)
- MFS_Lookup returned failure inum=0 name='testdir'
+ MFS_Creat returned failure inum=0 type=0 name='testdir'
 
 test bigdir2 FAILED
  (create a directory with more files than possible)
- MFS_Lookup returned failure inum=0 name='testdir'
+ MFS_Creat returned failure inum=0 type=0 name='testdir'
 
 test deep FAILED
  (create many deeply nested directories)
- MFS_Lookup returned failure inum=0 name='testdir'
+ MFS_Creat returned failure inum=0 type=0 name='testdir'
 
 test complex FAILED
  (a long sequence of creats and writes followed by a check)
- MFS_Lookup returned failure inum=0 name='1'
+ MFS_Creat returned failure inum=0 type=0 name='1'
 
 test complex2 FAILED
  (a long sequence of creats and writes followed by a check)
- MFS_Lookup returned failure inum=0 name='1'
+ MFS_Creat returned failure inum=0 type=0 name='1'
 
 test persist2 FAILED
  (restart server after creating many dirs and files)
- MFS_Lookup returned failure inum=0 name='1'
+ MFS_Creat returned failure inum=0 type=0 name='1'
 
 test free FAILED
  (check that inodes and direcrtory entries are freed)
- MFS_Unlink returned failure pinum=0 name='0'
+ MFS_Creat returned failure inum=0 type=1 name='0'
 
-Passed 2 of 27 tests.
-Overall 2 of 27
+Passed 3 of 27 tests.
+Overall 3 of 27

@@ -21,23 +21,26 @@ int main(int argc, char *argv[]) {
     r = MFS_Init("localhost", 11113);
     printf("%d\n",r);
 
-    r = MFS_Lookup(1, "a");
-    printf("%d\n",r);
-    
-    MFS_Stat_t m; 
-    r = MFS_Stat(1,&m);
-    printf("%d\n",r);
-
-    char message[MFS_BLOCK_SIZE];
-    sprintf(message, "hello world fuck me its late");
-    r = MFS_Write(1, message, 1);
-    printf("%d\n",r);
-    
-    r = MFS_Read(1, message, 1);
-    printf("%d\n",r);
-
-    //r = MFS_Creat(1,1,"a");
+    //r = MFS_Lookup(1, "a");
     //printf("%d\n",r);
+    
+    //MFS_Stat_t m; 
+    //r = MFS_Stat(1,&m);
+    //printf("%d\n",r);
+
+    //char message[MFS_BLOCK_SIZE];
+    //sprintf(message, "hello world fuck me its late");
+    //r = MFS_Write(1, message, 1);
+    //printf("%d\n",r);
+    
+    //r = MFS_Read(1, message, 1);
+    //printf("%d\n",r);
+
+    r = MFS_Creat(2,1,"a");
+    printf("%d\n",r);
+
+	r = MFS_Lookup(2, "a");
+	printf("%d\n", r);
 
     //r = MFS_Unlink(1,"a");
     //printf("%d\n",r);
