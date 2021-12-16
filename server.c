@@ -26,8 +26,8 @@ typedef struct imap {
 } imap;
 
 typedef struct cp {
-    int end;
     int im[256];
+    int end;
 } cp;
 
 typedef struct mssg {
@@ -165,7 +165,9 @@ mssg fWrite(mssg m) {
                 }
 
                 //Write m.buffer to block; buffer is size of MFS_BLOCK_SIZE.
-                pwrite(fd, m.buffer, MFS_BLOCK_SIZE, n.dp[m.block]*MFS_BLOCK_SIZE);
+                pwrite(fd, m.buffer, MFS_BLOCK_SIZE, checkPoint.end);
+                n.dp[m.block] = (checkPoint.end/MFS_BLOCK_SIZE)-1;
+                checkPoint.end += MFS_BLOCK_SIZE;
 
                 //Update Inode size
                 if(n.size < ((m.block*MFS_BLOCK_SIZE)-1))
@@ -177,21 +179,23 @@ mssg fWrite(mssg m) {
 
                 //Update Imap
                 im.inodes[i] = (checkPoint.end/MFS_BLOCK_SIZE)-1;
+                checkPoint.end += MFS_BLOCK_SIZE;
  
                 //Write imap
                 memcpy((imap*)buffer, &im, sizeof(imap));
-                pwrite(fd,buffer,sizeof(imap*),checkPoint.end+MFS_BLOCK_SIZE);
+                pwrite(fd,buffer,sizeof(imap*),checkPoint.end);
+                checkPoint.end += MFS_BLOCK_SIZE;
 
                 //get stat to find size of file
-                struct stat sb;
-                if(fstat(fd,&sb) == -1) {
-                    perror("stat");
-                    exit(EXIT_FAILURE);
-                }
+                //struct stat sb;
+                //if(fstat(fd,&sb) == -1) {
+                //    perror("stat");
+                //    exit(EXIT_FAILURE);
+                //}
 
                 //Update checkPoint
-                checkPoint.im[count] = ((checkPoint.end+MFS_BLOCK_SIZE)/MFS_BLOCK_SIZE)-1;
-                checkPoint.end = sb.st_size;
+                checkPoint.im[count] = (checkPoint.end/MFS_BLOCK_SIZE)-1;
+                //checkPoint.end = sb.st_size;
     
                 //Write checkpoint
                 memcpy((cp*)buffer, &checkPoint, sizeof(cp));
@@ -333,38 +337,44 @@ mssg Creat(mssg m) {
                             memcpy((dir*)buffer, &newDir, sizeof(dir));
                             pwrite(fd, buffer, sizeof(dir), checkPoint.end);
 							printf("newDir address %d \n", checkPoint.end);
+							checkPoint.end += MFS_BLOCK_SIZE;
 
                             //Write new inode
                             memcpy((inode*)buffer, &in, sizeof(inode));
-                            pwrite(fd, buffer, sizeof(inode), checkPoint.end+MFS_BLOCK_SIZE);
-							printf("newInode address %d \n", checkPoint.end+MFS_BLOCK_SIZE);
+                            pwrite(fd, buffer, sizeof(inode), checkPoint.end);
+							printf("newInode address %d \n", checkPoint.end);
+							int nInodePoint = checkPoint.end;
+							checkPoint.end += MFS_BLOCK_SIZE;
 
                             //Write pInode
                             memcpy((inode*)buffer, &n, sizeof(inode));
-                            pwrite(fd, buffer, sizeof(inode),checkPoint.end+(2*MFS_BLOCK_SIZE));
-							printf("pInode address %d \n",checkPoint.end+(2*MFS_BLOCK_SIZE));
+                            pwrite(fd, buffer, sizeof(inode),checkPoint.end);
+							printf("pInode address %d \n",checkPoint.end);
+							int pInodePoint = checkPoint.end;
+							checkPoint.end += MFS_BLOCK_SIZE;
 
                             //Update imap
-                            o.inodes[newInum] = ((checkPoint.end+MFS_BLOCK_SIZE)/MFS_BLOCK_SIZE) - 1;
-                            o.inodes[i] = ((checkPoint.end+(2*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE) - 1;
+                            o.inodes[newInum] = (nInodePoint/MFS_BLOCK_SIZE)-1;
+                            o.inodes[i] = (pInodePoint/MFS_BLOCK_SIZE)-1;
 							printf("o.inodes[newInum] %d %d 0.inodes[i] %d %d\n", o.inodes[newInum], ((checkPoint.end+MFS_BLOCK_SIZE)/MFS_BLOCK_SIZE) - 1, o.inodes[i], ((checkPoint.end+(2*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE) - 1);
 
                             //Write imap
                             memcpy((imap*)buffer, &o, sizeof(imap));
-                            pwrite(fd,buffer,sizeof(imap), checkPoint.end+(3*MFS_BLOCK_SIZE));
-							printf("imap address %d\n",checkPoint.end+(3*MFS_BLOCK_SIZE));
+                            pwrite(fd,buffer,sizeof(imap), checkPoint.end);
+							printf("imap address %d\n",checkPoint.end);
+							checkPoint.end += MFS_BLOCK_SIZE;
 
                             //get stat to find size of file
-                            struct stat sb;
-                            if(fstat(fd,&sb) == -1) {
-                                perror("stat");
-                                exit(EXIT_FAILURE);
-                            }
+                            //struct stat sb;
+                            //if(fstat(fd,&sb) == -1) {
+                            //    perror("stat");
+                            //    exit(EXIT_FAILURE);
+                            //}
 
                             //Update checkPoint
-                            checkPoint.im[count] = ((checkPoint.end+(3*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE)-1;
-							printf("checkPoint.im[count] %d\n", ((checkPoint.end+(3*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE)-1);
-                            checkPoint.end = sb.st_size;
+                            checkPoint.im[count] = (checkPoint.end/MFS_BLOCK_SIZE)-1;
+							printf("checkPoint.im[count] %d\n", checkPoint.im[count]);
+                            //checkPoint.end = sb.st_size;
 							printf("checkPoint.end %d\n", checkPoint.end);
     
                             //Write checkpoint
@@ -389,42 +399,51 @@ mssg Creat(mssg m) {
                             in.dp[0] = (checkPoint.end/MFS_BLOCK_SIZE) - 1;
 							printf("New Inode: type %d size %d dp[0] %d\n", in.type, in.size, in.dp[0]);
 
+							//Reserve Block at end of log for new file
+							checkPoint.end += MFS_BLOCK_SIZE;
+
+
                             //Write new inode
                             memcpy((inode*)buffer, &in, sizeof(inode));
-                            pwrite(fd, buffer, sizeof(inode), checkPoint.end+MFS_BLOCK_SIZE);
-							printf("newInode address %d \n", checkPoint.end+MFS_BLOCK_SIZE);
+                            pwrite(fd, buffer, sizeof(inode), checkPoint.end);
+							printf("newInode address %d \n", checkPoint.end);
+							int nInodePoint = checkPoint.end;
+							checkPoint.end += MFS_BLOCK_SIZE;
 
                             //Write pInode
                             memcpy((inode*)buffer, &n, sizeof(inode));
-                            pwrite(fd, buffer, sizeof(inode),checkPoint.end+(2*MFS_BLOCK_SIZE));
-							printf("pInode address %d \n",checkPoint.end+(2*MFS_BLOCK_SIZE));
+                            pwrite(fd, buffer, sizeof(inode),checkPoint.end);
+							printf("pInode address %d \n",checkPoint.end);
+							int pInodePoint = checkPoint.end;
+							checkPoint.end += MFS_BLOCK_SIZE;
 
                             //Update imap
-                            o.inodes[newInum] = ((checkPoint.end+MFS_BLOCK_SIZE)/MFS_BLOCK_SIZE) - 1;
-                            o.inodes[i] = ((checkPoint.end+(2*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE) - 1;
+                            o.inodes[newInum] = (nInodePoint/MFS_BLOCK_SIZE)-1;
+                            o.inodes[i] = (pInodePoint/MFS_BLOCK_SIZE)-1;
 							printf("o.inodes[newInum] %d %d 0.inodes[i] %d %d\n", o.inodes[newInum], ((checkPoint.end+MFS_BLOCK_SIZE)/MFS_BLOCK_SIZE) - 1, o.inodes[i], ((checkPoint.end+(2*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE) - 1);
+
                             //Write imap
                             memcpy((imap*)buffer, &o, sizeof(imap));
-                            pwrite(fd,buffer,sizeof(imap), checkPoint.end+(3*MFS_BLOCK_SIZE));
-							printf("imap address %d\n",checkPoint.end+(3*MFS_BLOCK_SIZE));
+                            pwrite(fd,buffer,sizeof(imap), checkPoint.end);
+							printf("imap address %d\n",checkPoint.end);
+							checkPoint.end += MFS_BLOCK_SIZE;
 
                             //get stat to find size of file
-                            struct stat sb;
-                            if(fstat(fd,&sb) == -1) {
-                                perror("stat");
-                                exit(EXIT_FAILURE);
-                            }
+                            //struct stat sb;
+                            //if(fstat(fd,&sb) == -1) {
+                            //    perror("stat");
+                            //    exit(EXIT_FAILURE);
+                            //}
 
                             //Update checkPoint
-                            checkPoint.im[count] = ((checkPoint.end+(3*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE)-1;
-							printf("checkPoint.im[count] %d\n", ((checkPoint.end+(3*MFS_BLOCK_SIZE))/MFS_BLOCK_SIZE)-1);
-                            checkPoint.end = sb.st_size;
+                            checkPoint.im[count] = (checkPoint.end/MFS_BLOCK_SIZE)-1;
+							printf("checkPoint.im[count] %d\n", (checkPoint.end/MFS_BLOCK_SIZE)-1);
+                            //checkPoint.end = sb.st_size;
 							printf("checkPoint.end %d\n", checkPoint.end);
     
                             //Write checkpoint
                             memcpy((cp*)buffer, &checkPoint, sizeof(cp));
                             pwrite(fd,buffer,sizeof(cp),0);
-
 
         					pread(fd, buffer, sizeof(imap),checkPoint.im[count]*MFS_BLOCK_SIZE);
         					memcpy(&o, (imap*)buffer, sizeof(imap));
@@ -511,24 +530,26 @@ mssg Unlink(mssg m) {
                         //copy and write inode
                         memcpy((inode*)buffer, &n, sizeof(inode));
                         pwrite(fd,buffer,sizeof(inode),checkPoint.end);
+                        checkPoint.end += MFS_BLOCK_SIZE;
 
                         //Update Imap
                         im.inodes[i] = (checkPoint.end/MFS_BLOCK_SIZE)-1;
  
                         //Write imap
                         memcpy((imap*)buffer, &im, sizeof(imap));
-                        pwrite(fd,buffer,sizeof(imap),checkPoint.end+MFS_BLOCK_SIZE);
+                        pwrite(fd,buffer,sizeof(imap),checkPoint.end);
+                        checkPoint.end += MFS_BLOCK_SIZE;
 
                         //get stat to find size of file
-                        struct stat st;
-                        if(fstat(fd,&st) == -1) {
-                            perror("stat");
-                            exit(EXIT_FAILURE);
-                        }
+                        //struct stat st;
+                        //if(fstat(fd,&st) == -1) {
+                        //    perror("stat");
+                        //    exit(EXIT_FAILURE);
+                        //}
 
                         //Update checkPoint
-                        checkPoint.im[count] = ((checkPoint.end+MFS_BLOCK_SIZE)/MFS_BLOCK_SIZE)-1;
-                        checkPoint.end = st.st_size;
+                        checkPoint.im[count] = (checkPoint.end/MFS_BLOCK_SIZE)-1;
+                        //checkPoint.end = st.st_size;
     
                         //Write checkpoint
                         memcpy((cp*)buffer, &checkPoint, sizeof(cp));
@@ -620,7 +641,7 @@ void createImage() {
     }
 
     //Initialize initial CheckPoint should be 4*4Kb
-    checkPoint.end = sb.st_size;
+    checkPoint.end = 4*MFS_BLOCK_SIZE;
     printf("init checkPoint.end %d\n",checkPoint.end);
     
     //write checkpoint
