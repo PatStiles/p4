@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include "udp.h"
 #include "mfs.h"
 
-#define BUFFER_SIZE (1000)
 #define DIR_NUMBER (128)
 #define DP_NUMBER (14)
 #define INODE_NUMBER (16)
@@ -43,6 +44,7 @@ typedef struct mssg {
 int fd;
 int sd;
 cp checkPoint;
+struct sockaddr_in addr;
 
 mssg lookUp(mssg m) {
     mssg msg = {0, 0, 0, 0, 0, 0, "\0", "\0"};
@@ -51,7 +53,8 @@ mssg lookUp(mssg m) {
 
     //Iterate over all imaps
     int count = 0;
-    while(checkPoint.im[count] != NULL && count < IMAP_NUMBER) {
+    while(checkPoint.im[count] != 0 && count < IMAP_NUMBER) {
+		printf("loop\n");
         imap im; 
         pread(fd, buffer, sizeof(imap),checkPoint.im[count]*MFS_BLOCK_SIZE);
         memcpy(&im, (imap*)buffer, sizeof(imap));
@@ -90,14 +93,14 @@ mssg lookUp(mssg m) {
     return msg;
 }
 
-mssg stat(mssg m) {
+mssg Stat(mssg m) {
     mssg msg = {0, 0, 0, 0, 0, 0, "\0", "\0"};
     printf("server:: Processing stat()\n");    
     char buffer[MFS_BLOCK_SIZE];
 
     //Iterate over all imaps
     int count = 0;
-    while(checkPoint.im[count] != NULL && count < IMAP_NUMBER) {
+    while(checkPoint.im[count] != 0 && count < IMAP_NUMBER) {
         imap im; 
         pread(fd, buffer, sizeof(imap),checkPoint.im[count]*MFS_BLOCK_SIZE);
         memcpy(&im, (imap*)buffer, sizeof(imap));
@@ -131,7 +134,7 @@ mssg fWrite(mssg m) {
     
     //Iterate over all imaps
     int count = 0;
-    while(checkPoint.im[count] != NULL && count < IMAP_NUMBER) {
+    while(checkPoint.im[count] != 0 && count < IMAP_NUMBER) {
         imap im; 
         pread(fd, buffer, sizeof(imap),checkPoint.im[count]*MFS_BLOCK_SIZE);
         memcpy(&im, (imap*)buffer, sizeof(imap));
@@ -167,7 +170,7 @@ mssg fWrite(mssg m) {
  
                 //Write imap
                 memcpy((imap*)buffer, &im, sizeof(imap));
-                pwrite(fd,buffer,sizeof(imap*),checkpoint.end+MFS_BLOCK_SIZE);
+                pwrite(fd,buffer,sizeof(imap*),checkPoint.end+MFS_BLOCK_SIZE);
 
                 //get stat to find size of file
                 struct stat sb;
@@ -178,7 +181,7 @@ mssg fWrite(mssg m) {
 
                 //Update checkPoint
                 checkPoint.im[count] = ((checkPoint.end+MFS_BLOCK_SIZE)/MFS_BLOCK_SIZE)-1;
-                checkPoint.end = sd.st_size;
+                checkPoint.end = sb.st_size;
     
                 //Write checkpoint
                 memcpy((cp*)buffer, &checkPoint, sizeof(cp));
@@ -201,7 +204,7 @@ mssg fRead(mssg m) {
      
     //Iterate over all imaps
     int count = 0;
-    while(checkPoint.im[count] != NULL && count < IMAP_NUMBER) {
+    while(checkPoint.im[count] != 0 && count < IMAP_NUMBER) {
         imap im; 
         pread(fd, buffer, sizeof(imap),checkPoint.im[count]*MFS_BLOCK_SIZE);
         memcpy(&im, (imap*)buffer, sizeof(imap));
@@ -225,7 +228,7 @@ mssg fRead(mssg m) {
                     //up I know it should return an array of directory entries
                     pread(fd, buffer, sizeof(MFS_BLOCK_SIZE), n.dp[m.block]*MFS_BLOCK_SIZE);        
                     memcpy(&d, (dir*)buffer, sizeof(dir));
-                    memcpy((dir*)msg.buffer, d, sizeof(dir));
+                    memcpy((dir*)msg.buffer, &d, sizeof(dir));
                     return msg;
                 } 
 
@@ -253,7 +256,8 @@ dir creatDir(int pinum) {
     initDr.entries[1] = child;
 
     for(int i = 2; i < 128; i++) {
-        initDr.entries[i] = {"\0", -1};
+		MFS_DirEnt_t empty = {"\0", -1};
+        initDr.entries[i] = empty;
     }
 
     return initDr;
@@ -268,13 +272,13 @@ mssg Creat(mssg m) {
     //Iterate over all imaps
         //Iterate over all inodes in a imap for inum of interest
     int count = 0;
-    while(checkPoint.im[count] != NULL) {
-        im o; 
-        pread(fd, buffer, sizeof(im*),checkPoint.im[count];
-        memcpy(&o, (im*)buffer, sizeof(im*));
+    while(checkPoint.im[count] != 0) {
+        imap o; 
+        pread(fd, buffer, sizeof(imap*),checkPoint.im[count]);
+        memcpy(&o, (imap*)buffer, sizeof(imap));
 
         for(int i = 0; i < 16; i++)
-            if(o.inodes[i] == m.pinum)
+            if(o.inodes[i] == m.pinum) {
                 //do some shit
             //If inum = pinum
             //if match check if pinum directory or not check if null or not
@@ -282,8 +286,9 @@ mssg Creat(mssg m) {
             //If Find open Directory entry if no -1 then full return -1.
                 
             //
+			}
             
-            
+	}        
     msg.tag = 0;
     return msg;
 }
@@ -293,13 +298,13 @@ mssg Unlink(mssg m) {
     mssg msg = {0, 0, 0, 0, 0, 0, "\0", "\0"};
     printf("server:: Processing Unlink()\n");
     char buffer[MFS_BLOCK_SIZE];
-    mssg msg = {0, 0, 0, 0, 0, 0, "\0", "\0"};
-    printf("server:: Processing lookUp()\n");
-    char buffer[MFS_BLOCK_SIZE];
+    //mssg msg = {0, 0, 0, 0, 0, 0, "\0", "\0"};
+    //printf("server:: Processing lookUp()\n");
+    //char buffer[MFS_BLOCK_SIZE];
 
     //Iterate over all imaps
     int count = 0;
-    while(checkPoint.im[count] != NULL && count < IMAP_NUMBER) {
+    while(checkPoint.im[count] != 0 && count < IMAP_NUMBER) {
         imap im; 
         pread(fd, buffer, sizeof(imap),checkPoint.im[count]*MFS_BLOCK_SIZE);
         memcpy(&im, (imap*)buffer, sizeof(imap));
@@ -343,10 +348,13 @@ void Shutdown() {
     fsync(fd);
     close(fd);
 
-    char reply[BUFFER_SIZE];
+    char reply[MFS_BLOCK_SIZE];
     mssg msg = {0, 0, 0, 0, 0, 0, "\0", "\0"};
 	memcpy((mssg*)reply, &msg, sizeof(mssg));
-    rc = UDP_Write(sd, &addr, reply, BUFFER_SIZE);
+    int rc = UDP_Write(sd, &addr, reply, MFS_BLOCK_SIZE);
+	if (rc == -1) {
+		exit(1);
+	}
     UDP_Close(sd);
     exit(0);
 }
@@ -365,17 +373,17 @@ void createImage() {
     char buffer[MFS_BLOCK_SIZE];
 
     //Initialize Directory
-    dir dr = createDir(0);
+    dir dr = creatDir(0);
 
     //Initialize initial Inode
     inode i;
-    i.type = MFS_DIRECTORY
+    i.type = MFS_DIRECTORY;
     i.size = MFS_BLOCK_SIZE - 1;
     i.dp[0] = 1;
 
     //Initialize initial Inode map
     imap im;
-    im.entries[0] = 2;
+    im.inodes[0] = 2;
 
     //Write Directory
     memcpy((dir*)buffer, &dr, sizeof(dir));
@@ -386,22 +394,22 @@ void createImage() {
     pwrite(fd,buffer,sizeof(inode),im.inodes[0]*MFS_BLOCK_SIZE);
  
     //Assign checkpoint imap number 
-    checkpoint.im[0] = 3;
+    checkPoint.im[0] = 3;
 
     //Write imap
     memcpy((imap*)buffer, &im, sizeof(imap));
-    pwrite(fd,buffer,sizeof(imap),checkpoint.im[0]*MFS_BLOCK_SIZE);
+    pwrite(fd,buffer,sizeof(imap),checkPoint.im[0]*MFS_BLOCK_SIZE);
 
     //get stat to find size of file
     struct stat sb;
     if(fstat(fd,&sb) == -1) {
         perror("stat");
-        return -1;
+        return;
     }
 
     //Initialize initial CheckPoint should be 4*4Kb
-    printf("%d\n",sd.st_size);
-    checkPoint.end = sd.st_size;
+    printf("%ld\n",sb.st_size);
+    checkPoint.end = sb.st_size;
     
     //write checkpoint
     memcpy((cp*)buffer, &checkPoint, sizeof(cp));
@@ -415,18 +423,18 @@ int main(int argc, char *argv[]) {
     if(argv[2] == NULL) {
         createImage();
     } else {
-        loadImage();
+        loadImage(argv[2]);
     }
 
     sd = UDP_Open(strtol(argv[1],NULL,10));
     assert(sd > -1);
     while (1) {
-	struct sockaddr_in addr;
+	//struct sockaddr_in addr;
 	mssg r_msg;
-	char message[BUFFER_SIZE];
+	char message[sizeof(mssg)];
 	printf("server:: waiting...\n");
 
-	int rc = UDP_Read(sd, &addr, message, BUFFER_SIZE);
+	int rc = UDP_Read(sd, &addr, message, sizeof(mssg));
 	memcpy(&r_msg, (mssg*) message, sizeof(mssg));
 	printf("server:: read message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, r_msg.tag, r_msg.type, r_msg.size, r_msg.pinum, r_msg.inum, r_msg.block, r_msg.name, r_msg.buffer); 
     if(rc > 0) {
@@ -436,7 +444,7 @@ int main(int argc, char *argv[]) {
                 s_msg = lookUp(r_msg); 
                 break;
             case 2:
-                s_msg = stat(r_msg); 
+                s_msg = Stat(r_msg); 
                 break;
             case 3:
                 s_msg = fWrite(r_msg);
@@ -454,10 +462,10 @@ int main(int argc, char *argv[]) {
                 Shutdown();
         }
         
-        char reply[BUFFER_SIZE];
+        char reply[sizeof(mssg)];
 	    printf("server:: send message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, s_msg.tag, s_msg.type, s_msg.size, s_msg.pinum, s_msg.inum, s_msg.block, s_msg.name, s_msg.buffer);
 	    memcpy((mssg*)reply, &s_msg, sizeof(mssg));
-	    rc = UDP_Write(sd, &addr, reply, BUFFER_SIZE);
+	    rc = UDP_Write(sd, &addr, reply, sizeof(mssg));
         printf("server:: reply\n");
     }
 
