@@ -15,7 +15,7 @@ typedef struct mssg {
     int pinum;
     int inum;
     int block;
-    char name[2];
+    char name[24];
     char buffer[MFS_BLOCK_SIZE];
 } mssg;
 
@@ -23,7 +23,7 @@ typedef struct mssg {
 int MFS_Init(char *hostname, int port)
 {
     printf("Initializing Client Connection ...\n");
-    sd = UDP_Open(11114);
+    sd = UDP_Open(11115);
     rc = UDP_FillSockAddr(&addrSnd, hostname, port); 
     printf("Connection Success ...");
     return 0;
@@ -41,7 +41,7 @@ int MFS_Lookup(int pinum, char *name)
     memcpy((mssg*)message, &msg, sizeof(mssg)); 
     printf("client(Lookup-->):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer);
  
-    rc = UDP_Write(sd, &addrSnd, message, MFS_BLOCK_SIZE); 
+    rc = UDP_Write(sd, &addrSnd, message, sizeof(mssg)); 
     if(rc < 0) { 
         printf("client:: failed to send %d\n", rc);
         return -1;
@@ -68,10 +68,10 @@ int MFS_Lookup(int pinum, char *name)
                 break;
             case 0:
                 printf("select() returns 0.\n sending a new request\n");
-                rc = UDP_Write(sd, &addrSnd, message, MFS_BLOCK_SIZE); 
+                rc = UDP_Write(sd, &addrSnd, message, sizeof(mssg)); 
                 break;  
             default: {
-                rc = UDP_Read(sd, &addrRcv, message, MFS_BLOCK_SIZE);
+                rc = UDP_Read(sd, &addrRcv, message, sizeof(mssg));
                 if(rc < 0)
                     return -1;
                 memcpy(&msg, (mssg*) message, sizeof(mssg));
@@ -99,7 +99,7 @@ int MFS_Stat(int inum, MFS_Stat_t *m)
     memcpy((mssg*)message, &msg, sizeof(mssg)); 
     printf("client(Stat-->):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer);
  
-    rc = UDP_Write(sd, &addrSnd, message, MFS_BLOCK_SIZE); 
+    rc = UDP_Write(sd, &addrSnd, message, sizeof(mssg)); 
     if(rc < 0) {
     printf("client:: failed to send %d\n", rc);
     exit(1);
@@ -128,7 +128,7 @@ int MFS_Stat(int inum, MFS_Stat_t *m)
                 rc = UDP_Write(sd, &addrSnd, message, MFS_BLOCK_SIZE); 
                 break;  
             default: {
-                rc = UDP_Read(sd, &addrRcv, message, MFS_BLOCK_SIZE);
+                rc = UDP_Read(sd, &addrRcv, message, sizeof(mssg));
                 if(rc < 0)
                     return -1;
                 memcpy(&msg, (mssg*) message, sizeof(mssg));
@@ -152,7 +152,7 @@ int MFS_Stat(int inum, MFS_Stat_t *m)
 //tag=3
 int MFS_Write(int inum, char *buffer, int block)
 {
-    if(block < 0 || block > 14 || strlen(buffer) > MFS_BLOCK_SIZE) {
+    if(block < 0 || block > 13 || strlen(buffer) > MFS_BLOCK_SIZE) {
         return -1;
     }
 
@@ -160,13 +160,14 @@ int MFS_Write(int inum, char *buffer, int block)
     msg.tag = 3;
     msg.inum = inum;
     msg.block = block;
-    strcpy(msg.buffer,buffer);
+    printf("buffer: -%s- %ld\n",buffer, strlen(buffer));
+    memcpy(msg.buffer,buffer,MFS_BLOCK_SIZE);
 
     char message[sizeof(mssg)];
     memcpy((mssg*)message, &msg, sizeof(mssg)); 
     printf("client(Write-->):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer);
 
-    rc = UDP_Write(sd, &addrSnd, message, MFS_BLOCK_SIZE); 
+    rc = UDP_Write(sd, &addrSnd, message, sizeof(mssg)); 
     if(rc < 0) {
         printf("client:: failed to send %d\n", rc);
         exit(1);
@@ -192,11 +193,11 @@ int MFS_Write(int inum, char *buffer, int block)
                 break;
             case 0:
                 printf("select() returns 0.\n sending a new request\n");
-                rc = UDP_Write(sd, &addrSnd, message, MFS_BLOCK_SIZE); 
+                rc = UDP_Write(sd, &addrSnd, message, sizeof(mssg)); 
                 break;  
             default: {
                 //read success message for write
-                rc = UDP_Read(sd, &addrRcv, message, MFS_BLOCK_SIZE);
+                rc = UDP_Read(sd, &addrRcv, message, sizeof(mssg));
                 if(rc < 0)
                     return -1;
                 memcpy(&msg, (mssg*) message, sizeof(mssg));
@@ -213,7 +214,7 @@ int MFS_Write(int inum, char *buffer, int block)
 //tag=4
 int MFS_Read(int inum, char *buffer, int block)
 {
-    if(block < 0 || block > 14 || strlen(buffer) > MFS_BLOCK_SIZE) {
+    if(block < 0 || block > 13 || strlen(buffer) > MFS_BLOCK_SIZE) {
         return -1;
     }
 
@@ -221,7 +222,7 @@ int MFS_Read(int inum, char *buffer, int block)
     msg.tag = 4;
     msg.inum = inum;
     msg.block = block;
-    strcpy(msg.buffer,buffer);
+    //memcpy(msg.buffer,buffer,MFS_BLOCK_SIZE);
 
     char message[sizeof(mssg)];
     memcpy((mssg*)message, &msg, sizeof(mssg)); 
@@ -253,15 +254,16 @@ int MFS_Read(int inum, char *buffer, int block)
                 break;
             case 0:
                 printf("select() returns 0.\n sending a new request\n");
-                rc = UDP_Write(sd, &addrSnd, message, MFS_BLOCK_SIZE); 
+                rc = UDP_Write(sd, &addrSnd, message, sizeof(mssg)); 
                 break;  
             default: {
-                rc = UDP_Read(sd, &addrRcv, message, MFS_BLOCK_SIZE);
+                rc = UDP_Read(sd, &addrRcv, message, sizeof(mssg));
                 if(rc < 0)
                     return -1;
                 memcpy(&msg, (mssg*) message, sizeof(mssg));
                 printf("client(<--Read):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer);
-                memcpy(&buffer, msg.buffer, MFS_BLOCK_SIZE);
+                printf("msg.buffer -%s-\n", msg.buffer);
+                memcpy(buffer, msg.buffer, MFS_BLOCK_SIZE);
                 return msg.tag;
             }
         }
@@ -275,7 +277,7 @@ int MFS_Read(int inum, char *buffer, int block)
 //tag=5
 int MFS_Creat(int pinum, int type, char *name)
 { 
-    if(sizeof(name) > 24 || pinum > 4096 || pinum < 0) { 
+    if(strlen(name) > 24 || pinum > 4096 || pinum < 0) { 
         printf("%ld\n",sizeof(name));
         return -1;
     }
@@ -290,7 +292,7 @@ int MFS_Creat(int pinum, int type, char *name)
     memcpy((mssg*)message, &msg, sizeof(mssg)); 
     printf("client(Creat-->):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer);
  
-    rc = UDP_Write(sd, &addrSnd, message, MFS_BLOCK_SIZE); 
+    rc = UDP_Write(sd, &addrSnd, message, sizeof(mssg)); 
     if(rc < 0) {
     printf("client:: failed to send %d\n", rc);
     exit(1);
@@ -319,7 +321,7 @@ int MFS_Creat(int pinum, int type, char *name)
                 rc = UDP_Write(sd, &addrSnd, message, MFS_BLOCK_SIZE); 
                 break;  
             default: { 
-                rc = UDP_Read(sd, &addrRcv, message, MFS_BLOCK_SIZE);
+                rc = UDP_Read(sd, &addrRcv, message, sizeof(mssg));
                 if(rc < 0) {
 					printf("creat read fail\n");
                     return -1;
@@ -346,7 +348,7 @@ int MFS_Unlink(int pinum, char *name)
     char message[sizeof(mssg)];
     memcpy((mssg*)message, &msg, sizeof(mssg)); 
     printf("client(Unlink-->):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer);
-    rc = UDP_Write(sd, &addrSnd, message, MFS_BLOCK_SIZE); 
+    rc = UDP_Write(sd, &addrSnd, message, sizeof(mssg)); 
     if(rc < 0) {
     printf("client:: failed to send %d\n", rc);
     exit(1);
@@ -372,10 +374,10 @@ int MFS_Unlink(int pinum, char *name)
                 break;
             case 0:
                 printf("select() returns 0.\n sending a new request\n");
-                rc = UDP_Write(sd, &addrSnd, message, MFS_BLOCK_SIZE); 
+                rc = UDP_Write(sd, &addrSnd, message, sizeof(mssg)); 
                 break;  
             default: { 
-                rc = UDP_Read(sd, &addrRcv, message, MFS_BLOCK_SIZE);
+                rc = UDP_Read(sd, &addrRcv, message, sizeof(mssg));
                 if(rc < 0)
                     return -1;
                 memcpy(&msg, (mssg*) message, sizeof(mssg));
@@ -428,7 +430,7 @@ int MFS_Shutdown()
                 break;  
             default: {
 				printf("client reading\n"); 
-                rc = UDP_Read(sd, &addrRcv, message, MFS_BLOCK_SIZE);
+                rc = UDP_Read(sd, &addrRcv, message, sizeof(mssg));
 				printf("client reading complete\n");
                 if(rc < 0)
                     return -1;
