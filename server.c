@@ -57,7 +57,7 @@ printf("PRINTING DISK IMAGE: \n\n");
             pread(fd, buffer, sizeof(imap),checkPoint.im[i]*MFS_BLOCK_SIZE);
             memcpy(&im, (imap*)buffer, sizeof(imap)); 
             for(int j = 0; j < INODE_NUMBER; j++) {
-                if(im.inodes[j] != 0) {
+                //if(im.inodes[j] != 0) {
                     inode n; 
                     pread(fd, buffer, sizeof(inode), im.inodes[j]*MFS_BLOCK_SIZE); 
                     memcpy(&n, (inode*)buffer, sizeof(inode));
@@ -76,7 +76,7 @@ printf("PRINTING DISK IMAGE: \n\n");
                             pread(fd, buffer, MFS_BLOCK_SIZE, n.dp[z]*MFS_BLOCK_SIZE);
                             printf("\t\tdp: %d %d -%s-\n", z, n.dp[z], buffer);
                         }
-                    }
+                   // }
                 }
             }
         }
@@ -96,7 +96,7 @@ mssg lookUp(mssg m) {
     int inodeIndex = m.pinum % INODE_NUMBER;
     printf("imapIndex %d inodeIndex %d \n", imapIndex, inodeIndex);
     
-    //print();
+    print();
 
     imap im; 
     pread(fd, buffer, sizeof(imap),checkPoint.im[imapIndex]*MFS_BLOCK_SIZE);
@@ -128,7 +128,7 @@ mssg lookUp(mssg m) {
         if(strcmp(d.entries[j].name,m.name) == 0) {
             //printf("Inum of m.name: %d\n", d.entries[j].inum);
             msg.inum = d.entries[j].inum;
-            //print();
+            print();
             return msg;
         }
     }
@@ -136,7 +136,7 @@ mssg lookUp(mssg m) {
     //Not found return -1
 	//printf("not found\n");
     msg.tag = -1;
-    //print();
+    print();
     return msg;
 }
 
@@ -194,7 +194,7 @@ mssg fWrite(mssg m) {
     pread(fd, buffer, sizeof(imap),checkPoint.im[imapIndex]*MFS_BLOCK_SIZE);
     memcpy(&im, (imap*)buffer, sizeof(imap));
     
-    //print();
+    print();
 
     if(im.inodes[inodeIndex] == 0) {
         msg.tag = -1;
@@ -251,7 +251,7 @@ mssg fWrite(mssg m) {
     //printf("o.inodes[0] %d o.inodes[1] %d checkPoint.im[imapIndex] %d checkPoint.end %d\n", im.inodes[0], im.inodes[1], checkPoint.im[imapIndex], (checkPoint.end/MFS_BLOCK_SIZE));
     
     fsync(fd);
-    //print();
+    print();
     return msg;
 }
 
@@ -271,7 +271,7 @@ mssg fRead(mssg m) {
     pread(fd, buffer, sizeof(imap),checkPoint.im[imapIndex]*MFS_BLOCK_SIZE);
     memcpy(&im, (imap*)buffer, sizeof(imap));
 
-    //print();
+    print();
 
     if(im.inodes[inodeIndex] == 0) {
         msg.tag = -1;
@@ -299,7 +299,7 @@ mssg fRead(mssg m) {
         pread(fd, buffer, MFS_BLOCK_SIZE, n.dp[m.block]*MFS_BLOCK_SIZE);        
         memcpy(&d, (dir*)buffer, sizeof(dir));
         memcpy((dir*)msg.buffer, &d, sizeof(dir));
-        //print();
+        print();
         return msg;
     } else { 
         //Set type to regular file and read in block
@@ -307,7 +307,7 @@ mssg fRead(mssg m) {
         pread(fd, buffer, MFS_BLOCK_SIZE, n.dp[m.block]*MFS_BLOCK_SIZE); 
         memcpy(msg.buffer, buffer, MFS_BLOCK_SIZE); 
         //printf("buffer: %s\n", buffer);
-        //print();
+        print();
         return msg;
     }
    
@@ -326,7 +326,9 @@ dir creatDir(int pinum, int curInum) {
     initDr.entries[1] = child;
 
     for(int i = 2; i < DIR_NUMBER; i++) {
-		MFS_DirEnt_t empty = {"\0", -1};
+		MFS_DirEnt_t empty;
+        memset(empty.name, '\0', 24*sizeof(char));
+        empty.inum = -1;
         initDr.entries[i] = empty;
     }
 
@@ -529,7 +531,7 @@ mssg Unlink(mssg m) {
     int inodeIndex = m.pinum % INODE_NUMBER;
     //printf("imapIndex %d inodeIndex %d \n", imapIndex, inodeIndex);
 
-    //print();
+    print();
      
     imap im; 
     pread(fd, buffer, sizeof(imap),checkPoint.im[imapIndex]*MFS_BLOCK_SIZE);
@@ -615,7 +617,7 @@ mssg Unlink(mssg m) {
             memcpy((cp*)buffer, &checkPoint, sizeof(cp));
             pwrite(fd,buffer,sizeof(cp),0);
 
-            //print();
+            print();
             fsync(fd);
             return msg;
         }
@@ -642,7 +644,7 @@ void Shutdown() {
 }
 
 void createImage(char* pathname) {
-    fd = open(pathname, O_RDWR | O_CREAT | O_SYNC); 
+    fd = open(pathname, O_RDWR | O_CREAT | 0666 | O_SYNC); 
     char buffer[MFS_BLOCK_SIZE];
 
     //Initialize Directory
@@ -691,9 +693,10 @@ void createImage(char* pathname) {
 }
 
 void loadImage(char* pathname) {
-    fd = open(pathname, O_RDWR | O_SYNC);
-	if (fd < 0) {
-		printf("fd -1\n");
+    printf("=%s_\n",pathname);
+    fd = open(pathname, O_RDWR |0666| O_SYNC);
+	if (fd == -1) {
+	    perror("open");	
 		createImage(pathname);
 	}
     char buffer[MFS_BLOCK_SIZE];
@@ -711,7 +714,7 @@ int main(int argc, char *argv[]) {
         return -1;
     if(argv[2] == NULL) {
 		printf("argv[2] null, creating image\n");
-        createImage("file");
+        createImage("testimage");
     } else {
 		printf("loading image %s\n", argv[2]);
         loadImage(argv[2]);
