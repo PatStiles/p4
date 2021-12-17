@@ -28,20 +28,24 @@ int main(int argc, char *argv[]) {
     //r = MFS_Stat(1,&m);
     //printf("%d\n",r);
 
-    //char message[MFS_BLOCK_SIZE];
-    //sprintf(message, "hello world fuck me its late");
-    //r = MFS_Write(1, message, 1);
-    //printf("%d\n",r);
-    
-    //r = MFS_Read(1, message, 1);
-    //printf("%d\n",r);
+    //char message[MFS_BLOCK_SIZE]; 
+    //char buf1[MFS_BLOCK_SIZE];
 
-    r = MFS_Creat(0,1,"test");
+    r = MFS_Creat(0,0,"test");
     printf("%d\n",r);
 
 	r = MFS_Lookup(0, "test");
 	printf("%d\n", r);
 
+    r = MFS_Unlink(0, "test");
+    printf("%d\n",r);
+
+	r = MFS_Lookup(0, "test");
+	printf("inum%d\n", r);
+    //r = MFS_Read(1, buf1, 0);
+    //printf("%d\n",r);
+
+    //printf("OUTPUT FROM READ: _%s_ _%s_\n", message, buf1);
     //r = MFS_Unlink(1,"a");
     //printf("%d\n",r);
 

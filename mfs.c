@@ -381,7 +381,7 @@ int MFS_Unlink(int pinum, char *name)
                 if(rc < 0)
                     return -1;
                 memcpy(&msg, (mssg*) message, sizeof(mssg));
-                printf("client(<--Creat):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer); 
+                printf("client(<--Unlink):: message [size:%d contents:( tag:%d type:%d size:%d pinum:%d inum:%d block:%d name:%s buffer:%s)]\n", rc, msg.tag, msg.type, msg.size, msg.pinum, msg.inum, msg.block, msg.name, msg.buffer); 
                 return msg.tag;
             }
         }
