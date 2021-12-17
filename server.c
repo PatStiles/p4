@@ -573,17 +573,8 @@ void Shutdown() {
     exit(0);
 }
 
-void loadImage(char* pathname) {
-    fd = open(pathname, O_RDWR | O_SYNC);
-    char buffer[MFS_BLOCK_SIZE];
-
-    //Load checkPoint
-    pread(fd, buffer, sizeof(cp), 0);
-    memcpy(&checkPoint, (cp*)buffer, sizeof(cp));
-}
-
-void createImage() {
-    fd = open("file", O_RDWR | O_CREAT | O_SYNC); 
+void createImage(char* pathname) {
+    fd = open(pathname, O_RDWR | O_CREAT | O_SYNC); 
     char buffer[MFS_BLOCK_SIZE];
 
     //Initialize Directory
@@ -636,13 +627,28 @@ void createImage() {
     pwrite(fd,buffer,sizeof(cp),0);
 }
 
+void loadImage(char* pathname) {
+    fd = open(pathname, O_RDWR | O_SYNC);
+	if (fd == -1) {
+		printf("fd -1\n");
+		createImage(pathname);
+	}
+    char buffer[MFS_BLOCK_SIZE];
+
+    //Load checkPoint
+    pread(fd, buffer, sizeof(cp), 0);
+    memcpy(&checkPoint, (cp*)buffer, sizeof(cp));
+}
+
 // server code
 int main(int argc, char *argv[]) {
     if(argc < 2)
         return -1;
     if(argv[2] == NULL) {
-        createImage();
+		printf("argv[2] null, creating image\n");
+        createImage("file");
     } else {
+		printf("loading image %s\n", argv[2]);
         loadImage(argv[2]);
     }
 
