@@ -36,10 +36,10 @@ int main(int argc, char *argv[]) {
     //r = MFS_Read(1, message, 1);
     //printf("%d\n",r);
 
-    r = MFS_Creat(0,1,"a");
+    r = MFS_Creat(0,1,"test");
     printf("%d\n",r);
 
-	r = MFS_Lookup(1, "b");
+	r = MFS_Lookup(0, "test");
 	printf("%d\n", r);
 
     //r = MFS_Unlink(1,"a");
