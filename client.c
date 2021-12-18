@@ -28,27 +28,47 @@ int main(int argc, char *argv[]) {
     //r = MFS_Stat(1,&m);
     //printf("%d\n",r);
 
-    //char message[MFS_BLOCK_SIZE]; 
-    //char buf1[MFS_BLOCK_SIZE];
+    char message[MFS_BLOCK_SIZE]; 
+//    char buf1[MFS_BLOCK_SIZE];
 
     r = MFS_Creat(0,0,"test");
     printf("%d\n",r);
 
-	r = MFS_Lookup(0, "test");
-	printf("%d\n", r);
+//	r = MFS_Lookup(0, "test");
+//	printf("%d\n", r);
 
-    r = MFS_Unlink(0, "test");
-    printf("%d\n",r);
+	for(int i = 0; i < 1790; i++) {
+	    sprintf(message,"%d", i);
+	    r = MFS_Creat(1,1,message);
+    }
 
-	r = MFS_Lookup(0, "test");
-	printf("inum%d\n", r);
-    //r = MFS_Read(1, buf1, 0);
-    //printf("%d\n",r);
+//    sprintf(message, "START BLOCK 1 END BLOCK 1");
+//	r = MFS_Write(1,message,0);
+//	printf("%d\n",r);
 
-    //printf("OUTPUT FROM READ: _%s_ _%s_\n", message, buf1);
-    //r = MFS_Unlink(1,"a");
-    //printf("%d\n",r);
+//	r = MFS_Lookup(0, "test");
+//	printf("inum%d\n", r);
+//    r = MFS_Read(1, buf1, 0);
+//    printf("%d\n",r);
 
+//    printf("OUTPUT FROM READ: _%s_ _%s_\n", message, buf1);
+
+//    r = MFS_Shutdown();
+//    printf("%d\n",r);
+
+//    r = MFS_Init("localhost",11113);
+//    printf("%d\n",r);
+//
+//    r = MFS_Lookup(0, "test");
+//    printf("%d\n",r);
+//
+//    r = MFS_Lookup(0, "test");
+//	printf("inum%d\n", r);
+//    r = MFS_Read(1, buf1, 0);
+//    printf("%d\n",r);
+//
+//    printf("OUTPUT FROM READ: _%s_ _%s_\n", message, buf1);
+//
     r = MFS_Shutdown();
     printf("%d\n",r);
     // memcpy(&msg, (mssg*) message, sizeof(mssg));

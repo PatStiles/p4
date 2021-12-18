@@ -43,6 +43,7 @@ int MFS_Lookup(int pinum, char *name)
  
     rc = UDP_Write(sd, &addrSnd, message, sizeof(mssg)); 
     if(rc < 0) { 
+        perror("rc");
         printf("client:: failed to send %d\n", rc);
         return -1;
     }
